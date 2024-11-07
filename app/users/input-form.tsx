@@ -5,15 +5,34 @@
 import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
+        
 
 export default function InputForm({ onSubmit }: any) {
+  interface Uni {
+    name: string, 
+    code: string
+  }
+
   const [user, setUser] = useState('');
+  const [selectedUni, setSelectedUni] = useState<Uni | null>(null)
+
+  const universities: Uni[] = [
+    {name: 'Technical University', code: 'TU'},
+    {name: 'Sofia University', code: 'SU'}
+  ]
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    onSubmit(user);
-    setUser({ age: '', name: '' }); // reset form
+    
+    console.log(selectedUni)
+    console.log(user)
+    onSubmit({
+      ...user,
+      university: selectedUni!.code
+    });
+    setUser({ age: '', name: '', university: '' }); // reset form
+    setSelectedUni(null);
   };
 
   const handleChange = (e) => {
@@ -49,6 +68,10 @@ export default function InputForm({ onSubmit }: any) {
           onChange={handleChange}
         />
       </div>
+      <div className="p-inputgroup flex-1">
+            <Dropdown value={selectedUni} onChange={(e) => setSelectedUni(e.value)} options={universities} optionLabel="name" 
+                placeholder="Select a University" className="w-full" />
+        </div>
       {user && <div> Success!!! </div>}
       <div style={{ 'align-self': 'end' }}>
         <Button label="Submit" onClick={handleSubmit} />
